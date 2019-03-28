@@ -5,6 +5,7 @@
 <body>
   <div class="container">
     {{> addImg}}
+    {{> editImg}}
     {{> navBar}}
     {{> mainBody}}
     {{> footerBar}}
@@ -51,8 +52,8 @@
       <h1 class="jumbotron-heading">Image Gallery</h1>
       <p class="lead text-muted">Glad you found your way here. It's always a good time to read a book. Find your passion amongst the stars by choosing from our many categories tailored just for you.</p>
       <p>
-        <a href="#" class="btn btn-primary my-2">Top Rated Book</a>
-        <a class="js-addImg btn btn-primary">Add New Image</a>
+        <!-- <a href="#" class="btn btn-primary my-2">Top Rated Book</a> -->
+        <a href="#" class="js-addImg btn btn-primary my-2">Add New Image</a>
       </p>
     </div>
   </section>
@@ -64,24 +65,33 @@
     <div class="album py-5 bg-light">
       <div class="container">
         <div class="row">
-          <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-              <img src='data:image/svg+xml;charset=UTF-8,<svg%20width%3D"348"%20height%3D"225"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20viewBox%3D"0%200%20348%20225"%20preserveAspectRatio%3D"none"><defs><style%20type%3D"text%2Fcss">%23holder_1697acec537%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A17pt%20%7D%20<%2Fstyle><%2Fdefs><g%20id%3D"holder_1697acec537"><rect%20width%3D"348"%20height%3D"225"%20fill%3D"%2355595c"><%2Frect><g><text%20x%3D"116.7265625"%20y%3D"120.3">Thumbnail<%2Ftext><%2Fg><%2Fg><%2Fsvg>' alt="temp photo">
-              <div class="card-body">
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+          {{#each allImages}}
+            <div class="col-md-4" id="{{_id}}">
+              <div class="card mb-4 shadow-sm">
+                <img class="allImages" src='{{path}}' alt="temp photo">
+                <div class="card-body">
+                  <p class="card-text"><h3>{{title}}</h3>{{desc}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary js-editImage">Edit</button>
+                    </div>
+                    <small class="text-muted">{{createdOn}} mins</small>
+                    <button type="button" class="js-deleteImg btn btn-sm btn-outline-secondary" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus"><i class="zmdi zmdi-delete"></i></button>
                   </div>
-                  <small class="text-muted">9 mins</small>
                 </div>
               </div>
-            </div>
-          </div> <!-- /row for all cards -->
+            </div> <!-- /col -->
+          {{/each}}     
+        </div> <!-- /row for all cards -->
+        <div class="row justify-content-around">
+          <div class="col-md-6 text-center">
+            <h3>{{imagesFound}} images found in the gallery</h3>
+          </div>
         </div>
       </div>
     </div>
+
   </main>
 </template>
 
@@ -97,45 +107,84 @@
 </template>
 
 <template name="addImg">
-<!-- Modal -->
-<div class="modal fade" id="addImgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img id="addImgPreview" src="" alt="">
-        <div class="input-group mb-3">
+  <!-- Modal -->
+  <div class="modal fade" id="addImgModal" tabindex="-1" role="dialog" aria-labelledby="addImgModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addImgModalLabel">Add Image to Gallery</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img class="mb-3" id="addImgPreview" src="user-512.png" alt="">
+          <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Image</span>
             </div>
-              <input id="imgPath" type="text" class="form-control" placeholder="Image path" aria-label="title">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Title</span>
+            <input id="imgPath" type="text" class="form-control" placeholder="Image path" aria-label="title">
           </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Title</span>
+            </div>
             <input id="imgTitle" type="text" class="form-control" placeholder="Title of image" aria-label="title">
-        </div>
-
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Image Description</span>
           </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Image Description</span>
+            </div>
             <textarea id="imgDesc" class="form-control" aria-label="Description"></textarea>
+          </div>
         </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary js-saveImg">Add New Image</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary js-cancelAdd">Cancel</button>
+          <button type="button" class="btn btn-primary js-saveImg">Add New Image</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</template>
+
+<template name="editImg">
+  <!-- Modal -->
+  <div class="modal fade" id="editImgModal" tabindex="-1" role="dialog" aria-labelledby="editImgModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editImgModalLabel">Edit Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input id="eId" type="hidden">
+          <img class="mb-3" id="ImgPreview" src="user-512.png" alt="">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Image</span>
+            </div>
+            <input id="eimgPath" type="text" class="form-control" placeholder="Image path" aria-label="title">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Title</span>
+            </div>
+            <input id="eimgTitle" type="text" class="form-control" placeholder="Title of image" aria-label="title">
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Image Description</span>
+            </div>
+            <textarea id="eimgDesc" class="form-control" aria-label="Description"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary js-cancelAdd">Cancel</button>
+          <button type="button" class="btn btn-primary js-updateImg">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
