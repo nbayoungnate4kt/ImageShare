@@ -69,6 +69,7 @@
             <div class="col-md-4" id="{{_id}}">
               <div class="card mb-4 shadow-sm">
                 <img class="allImages" src='{{path}}' alt="temp photo">
+                {{> starsRating class="js-rate" data_id=_id rating=imgRate size=32 mutable=true}}
                 <div class="card-body">
                   <p class="card-text"><h3>{{title}}</h3>{{desc}}</p>
                   <div class="d-flex justify-content-between align-items-center">

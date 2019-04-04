@@ -40,8 +40,27 @@ Template.mainBody.helpers({
 	imagesFound(){
 		return imagesDB.find().count();
 	},
+	imageAge(){
+		var imgCreatedOn = imagesDB.findOne({_id:this._id}).createdOn;
+		imgCreatedOn = Math.round((new Date() - imgCreatedOn)/60000);
+		var timeunit = "mins";
+		if (imgCreatedOn > 60){
+			imgCreatedOn=Math.round(imgCreatedOn/60);	
+			timeunit = "hours";		
+		} else if (imgCreatedOn > 1440){
+			imgCreatedOn=Math.round(imgCreatedOn/1440);
+			timeunit = "days";			
+		}
+		return imgCreatedOn + timeunit;
+
+	},
 	allImages(){
-		return imagesDB.find();
+		var preTime = new Date() - 15000;
+		var newResults = imagesDB.find({"createdOn":{$gte:prev}})
+		if (newResults > 0){
+			return imagesDB.find
+		}
+		return imgCreatedOn;
 	}
 });
 
@@ -60,6 +79,11 @@ Template.mainBody.events({
 		$("#eimgDesc").val(imagesDB.findOne({_id:imgId}).desc);
 		$('#eId').val(imagesDB.findOne({_id:imgId})._id);
 		$('#editImgModal').modal("show");
+	},
+	'click .js-rate'(event){
+		var imgId = this.data_id;
+		var rating = $(event.currentTarget).data('userrating');
+		imagesDB.update({_id:imgId}, {$set:{'imgRate':rating}})
 	}
 });
 
