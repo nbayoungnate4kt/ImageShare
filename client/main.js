@@ -1,11 +1,16 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Session } from 'meteor/session'
+import { Session } from 'meteor/session';
+import { Accounts } from 'meteor/accounts-base';
 
 import './main.html';
 import '../lib/collection.js';
 
 Session.set('imgLimit', 3);
+
+Accounts.ui.config({
+  passwordSignupFields: 'USERNAME_ONLY',
+});
 
 Template.myJumbo.events({
 	'click .js-addImg'(event){
@@ -79,6 +84,13 @@ Template.mainBody.helpers({
 			return imagesDB.find({}, {sort:{imgRate:-1, createdOn:1}, limit:Session.get('imgLimit')});
 		}
 		
+	},
+	userLoggedIn(){
+		if (Meteor.user()){
+			return true;
+		} else {
+			return false;
+		}
 	}
 });
 
