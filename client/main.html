@@ -54,8 +54,10 @@
       <p class="lead text-muted">Glad you found your way here. It's always a good time to read a book. Find your passion amongst the stars by choosing from our many categories tailored just for you.</p>
       <p>
         <!-- <a href="#" class="btn btn-primary my-2">Top Rated Book</a> -->
+        {{#if currentUser}}
         <a href="#" class="js-addImg btn btn-primary my-2">Add New Image</a>
-      </p>
+        {{/if}}
+      </p>      
     </div>
   </section>
 </template>
@@ -65,23 +67,35 @@
     {{> myJumbo}}
     <div class="album py-5 bg-light">
       <div class="container">
+        <div class="row justify-content-end">
+          <div class="col-3">
+            <a href="#" class="js-clearFilter btn btn-primary my-2">Clear Filter</a>
+          </div>
+        </div>
         <div class="row">
           {{#each allImages}}
             <div class="col-md-4" id="{{_id}}">
               <div class="card mb-4 shadow-sm">
-                <img class="allImages" src='{{path}}' alt="temp photo">
+                <div class="row">
+                  <div class="col-8 offset-1">
+                    <a href="" id="{{userId}}" class="js-showUser"><h5>@{{userName}}</h5></a>
+                  </div>
+                </div>                
+                <div class="imgFrame">
+                  <img class="allImages" src='{{path}}' alt="temp photo">
+                </div>
                 {{> starsRating class="js-rate" data_id=_id rating=imgRate size=32 mutable=true}}
                 <div class="card-body">
                   <p class="card-text"><h3>{{title}}</h3>{{desc}}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      {{#if userLoggedIn}}
+                      {{#if currentUser}}
                       <button type="button" class="btn btn-sm btn-outline-secondary js-editImage"><i class="zmdi zmdi-edit zmdi-hc-lg"></i></button>
                       {{/if}}
                     </div>
                     <small class="text-muted">{{imageAge}}</small>
-                    {{#if userLoggedIn}}
+                    {{#if currentUser}}
                     <button type="button" class="js-deleteImg btn btn-sm btn-outline-secondary" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus"><i class="zmdi zmdi-delete zmdi-hc-lg"></i></button>
                     {{/if}}
                   </div>
@@ -124,7 +138,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <img class="mb-3" id="addImgPreview" src="nba.jpg" alt="">
+          <img class="mb-3" id="addImgPreview" src="user-512.png" alt="">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Image</span>
@@ -166,7 +180,7 @@
         </div>
         <div class="modal-body">
           <input id="eId" type="hidden">
-          <img class="mb-3" id="ImgPreview" src="nba.jpg" alt="">
+          <img class="mb-3" id="ImgPreview" src="user-512.png" alt="">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Image</span>
